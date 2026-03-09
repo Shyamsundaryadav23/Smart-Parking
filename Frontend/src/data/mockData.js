@@ -1,10 +1,10 @@
 export const parkingLots = [
-  { id: "lot-1", name: "City Mall Parking", location: "Downtown", totalSlots: 20, availableSlots: 12 },
-  { id: "lot-2", name: "Airport Parking Zone A", location: "Airport Road", totalSlots: 50, availableSlots: 23 },
-  { id: "lot-3", name: "Central Station Parking", location: "Station Square", totalSlots: 30, availableSlots: 8 },
-  { id: "lot-4", name: "Tech Park Garage", location: "IT District", totalSlots: 40, availableSlots: 15 },
-  { id: "lot-5", name: "Hospital Parking", location: "Medical Avenue", totalSlots: 25, availableSlots: 5 },
-  { id: "lot-6", name: "University Campus Lot", location: "Education Lane", totalSlots: 35, availableSlots: 18 },
+  { id: "lot-1", name: "City Mall Parking", location: "Downtown", city: "Mumbai", totalSlots: 20, availableSlots: 12 },
+  { id: "lot-2", name: "Airport Parking Zone A", location: "Airport Road", city: "Delhi", totalSlots: 50, availableSlots: 23 },
+  { id: "lot-3", name: "Central Station Parking", location: "Station Square", city: "Bangalore", totalSlots: 30, availableSlots: 8 },
+  { id: "lot-4", name: "Tech Park Garage", location: "IT District", city: "Chennai", totalSlots: 40, availableSlots: 15 },
+  { id: "lot-5", name: "Hospital Parking", location: "Medical Avenue", city: "Hyderabad", totalSlots: 25, availableSlots: 5 },
+  { id: "lot-6", name: "University Campus Lot", location: "Education Lane", city: "Pune", totalSlots: 35, availableSlots: 18 },
 ];
 
 export const generateSlots = (lotId, count) => {

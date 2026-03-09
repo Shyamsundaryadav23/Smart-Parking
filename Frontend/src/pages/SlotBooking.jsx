@@ -20,15 +20,49 @@ const SlotBooking = () => {
   const [selected, setSelected] = useState(null);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [vehicleType, setVehicleType] = useState("");
+  const [vehicleNumber, setVehicleNumber] = useState("");
 
-  const handleBook = (e) => {
+  const PRICE_MAP = {
+    Car: 50,
+    Bike: 20,
+    "Electric Car": 60,
+  };
+
+  const handleBook = async (e) => {
     e.preventDefault();
 
-    toast.success(`Slot ${selected?.label} booked successfully!`);
+    if (!selected || !vehicleType || !vehicleNumber || !startTime || !endTime) {
+      toast.error("Please fill in all booking details.");
+      return;
+    }
 
-    setSelected(null);
-    setStartTime("");
-    setEndTime("");
+    const payload = {
+      slotId: selected.id,
+      vehicleType,
+      vehicleNumber,
+      startTime,
+      endTime,
+    };
+
+    try {
+      const res = await fetch("/reservations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error("Network response not ok");
+      toast.success("Slot booked successfully");
+      // reset form
+      setSelected(null);
+      setStartTime("");
+      setEndTime("");
+      setVehicleType("");
+      setVehicleNumber("");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to book slot. Please try again.");
+    }
   };
 
   if (!lot)
@@ -142,6 +176,42 @@ const SlotBooking = () => {
                     required
                   />
                 </div>
+              </div>
+
+              {/* Vehicle type and number */}
+              <div className="space-y-2">
+                <Label htmlFor="vehicleType">Vehicle Type</Label>
+                <select
+                  id="vehicleType"
+                  className="select w-full"
+                  value={vehicleType}
+                  onChange={(e) => setVehicleType(e.target.value)}
+                  required
+                >
+                  <option value="">Select type</option>
+                  <option value="Car">Car</option>
+                  <option value="Bike">Bike</option>
+                  <option value="Electric Car">Electric Car</option>
+                </select>
+              </div>
+
+              {vehicleType && (
+                <div className="text-sm text-muted-foreground">
+                  Price: ₹{PRICE_MAP[vehicleType]} per hour
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="vehicleNumber">Vehicle Number</Label>
+                <Input
+                  id="vehicleNumber"
+                  type="text"
+                  className="w-full"
+                  value={vehicleNumber}
+                  onChange={(e) => setVehicleNumber(e.target.value)}
+                  placeholder="e.g. KA-01-AB-1234"
+                  required
+                />
               </div>
 
               <Button className="w-full gradient-bg text-primary-foreground hover:opacity-90">
