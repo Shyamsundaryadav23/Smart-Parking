@@ -16,9 +16,9 @@ import MyReservations from "./pages/MyReservations";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import ManageLots from "./pages/ManageLots";
-import ManageSlots from "./pages/ManageSlots";
 import AdminReservations from "./pages/AdminReservations";
 import ManageUsers from "./pages/ManageUsers";
+import AdminSlotDetails from "./pages/AdminSlotDetails";
 
 import NotFound from "./pages/NotFound";
 
@@ -50,7 +50,7 @@ function App() {
             <Route element={<AdminLayout />}>
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/lots" element={<ManageLots />} />
-              <Route path="/admin/slots" element={<ManageSlots />} />
+              <Route path="/admin/lots/:lotId/slots" element={<AdminSlotDetails />} />
               <Route path="/admin/reservations" element={<AdminReservations />} />
               <Route path="/admin/users" element={<ManageUsers />} />
             </Route>
