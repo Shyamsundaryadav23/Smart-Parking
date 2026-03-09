@@ -15,7 +15,6 @@ import { useState } from "react";
 const sidebarItems = [
   { label: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
   { label: "Parking Lots", path: "/admin/lots", icon: ParkingSquare },
-  { label: "Manage Slots", path: "/admin/slots", icon: Grid3X3 },
   { label: "Reservations", path: "/admin/reservations", icon: CalendarCheck },
   { label: "Users", path: "/admin/users", icon: Users }
 ];
@@ -47,11 +46,10 @@ function AdminLayout() {
             key={item.path}
             to={item.path}
             onClick={() => setMobileOpen(false)}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium ${
-              location.pathname === item.path
-                ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
-            }`}
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium ${location.pathname === item.path
+              ? "bg-sidebar-primary text-sidebar-primary-foreground"
+              : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+              }`}
           >
             <item.icon className="h-5 w-5 shrink-0" />
 
@@ -79,9 +77,8 @@ function AdminLayout() {
     <div className="min-h-screen flex bg-background">
       {/* Desktop sidebar */}
       <aside
-        className={`hidden md:flex flex-col bg-sidebar border-r border-sidebar-border transition-all ${
-          collapsed ? "w-16" : "w-64"
-        }`}
+        className={`hidden md:flex flex-col bg-sidebar border-r border-sidebar-border transition-all ${collapsed ? "w-16" : "w-64"
+          }`}
       >
         <SidebarContent />
 
@@ -111,7 +108,7 @@ function AdminLayout() {
       )}
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="sticky top-0 z-40 h-14 flex items-center border-b px-4">
+        <header className="sticky top-0 z-40 h-14 flex items-center border-b bg-background px-4">
           <button
             className="md:hidden p-2 -ml-2 mr-2"
             onClick={() => setMobileOpen(true)}

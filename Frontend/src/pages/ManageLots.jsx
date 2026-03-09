@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Grid3X3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -51,7 +51,7 @@ const ManageLots = () => {
       {showForm && (
         <div className="parking-card p-5 mb-6">
           <form onSubmit={addLot} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            
+
             <div className="space-y-2">
               <Label>Name</Label>
               <Input
@@ -147,7 +147,16 @@ const ManageLots = () => {
 
                   <td className="px-4 py-3">{lot.totalSlots}</td>
 
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-primary hover:text-primary hover:bg-primary/10 h-8"
+                      onClick={() => window.location.href = `/admin/lots/${lot.id}/slots`}
+                    >
+                      <Grid3X3 className="h-4 w-4 mr-1" />
+                      Layout
+                    </Button>
                     <Button
                       size="sm"
                       variant="ghost"
