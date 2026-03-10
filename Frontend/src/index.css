@@ -132,4 +132,315 @@
   .slot-reserved {
     @apply bg-yellow-500/15 border-2 border-yellow-500 text-yellow-700 cursor-not-allowed;
   }
+
+  .landing-root {
+    background:
+      radial-gradient(1200px 600px at -10% -10%, rgba(14, 165, 233, 0.18), transparent 60%),
+      radial-gradient(900px 500px at 95% 0%, rgba(16, 185, 129, 0.14), transparent 55%),
+      #f1f5f9;
+  }
+
+  .fade-up {
+    animation: fadeUp 680ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .slide-up {
+    animation: slideUp 640ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .float-soft {
+    animation: floatSoft 5.8s ease-in-out infinite;
+  }
+
+  .landing-glow {
+    transition: box-shadow 280ms ease, transform 280ms ease;
+  }
+
+  .landing-glow:hover {
+    box-shadow: 0 16px 35px -20px rgba(2, 132, 199, 0.75);
+    transform: translateY(-2px);
+  }
+
+  .landing-copy p {
+    margin-bottom: 0.18rem;
+  }
+
+  .landing-pill {
+    transition: transform 260ms ease, box-shadow 260ms ease, background-color 260ms ease;
+  }
+
+  .landing-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px -22px rgba(5, 150, 105, 0.9);
+    background-color: #bbf7d0;
+  }
+
+  .landing-pill:hover .landing-pill-icon {
+    animation: leafSpin 620ms ease;
+  }
+
+  .landing-hero {
+    text-wrap: balance;
+  }
+
+  .landing-btn-dark {
+    transition: transform 240ms ease, box-shadow 240ms ease, background-color 240ms ease;
+  }
+
+  .landing-btn-dark:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 16px 25px -20px rgba(15, 23, 42, 1);
+    background-color: #0f172a;
+  }
+
+  .landing-btn-primary {
+    transition: transform 260ms ease, box-shadow 260ms ease, filter 260ms ease;
+  }
+
+  .landing-btn-primary:hover {
+    transform: translateY(-2px) scale(1.015);
+    box-shadow: 0 20px 30px -20px rgba(3, 105, 161, 0.95);
+    filter: saturate(1.08);
+  }
+
+  .landing-btn-primary:hover .landing-arrow {
+    animation: arrowNudge 700ms ease infinite;
+  }
+
+  .landing-btn-secondary {
+    transition: transform 240ms ease, box-shadow 240ms ease, border-color 240ms ease;
+  }
+
+  .landing-btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 26px -22px rgba(30, 41, 59, 0.9);
+    border-color: #94a3b8;
+  }
+
+  .landing-feature-card {
+    transition: transform 250ms ease, box-shadow 250ms ease, border-color 250ms ease, background-color 250ms ease;
+  }
+
+  .landing-feature-card:hover {
+    transform: translateY(-3px);
+    border-color: #86efac;
+    background-color: #f8fffb;
+    box-shadow: 0 15px 30px -24px rgba(16, 185, 129, 0.95);
+  }
+
+  .landing-feature-card:hover .landing-check {
+    animation: checkPop 520ms ease;
+  }
+
+  .landing-illustration {
+    transition: transform 400ms ease, box-shadow 400ms ease;
+  }
+
+  .landing-illustration:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 28px 45px -34px rgba(14, 116, 144, 0.95);
+  }
+
+  .landing-cloud-left {
+    animation: cloudDriftLeft 14s ease-in-out infinite alternate;
+  }
+
+  .landing-cloud-right {
+    animation: cloudDriftRight 16s ease-in-out infinite alternate;
+  }
+
+  .landing-city {
+    animation: cityPulse 7.2s ease-in-out infinite;
+  }
+
+  .landing-trees {
+    animation: swayTree 6.5s ease-in-out infinite;
+    transform-origin: 50% 100%;
+  }
+
+  .landing-car {
+    animation: carBob 4.8s ease-in-out infinite;
+    transform-origin: 50% 70%;
+  }
+
+  .landing-illustration:hover .landing-wheel {
+    animation: wheelSpin 1.2s linear infinite;
+    transform-origin: center;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes floatSoft {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes arrowNudge {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes leafSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-18deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes checkPop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes cloudDriftLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(8px);
+  }
+}
+
+@keyframes cloudDriftRight {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-10px);
+  }
+}
+
+@keyframes cityPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.84;
+  }
+}
+
+@keyframes swayTree {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(1deg);
+  }
+}
+
+@keyframes carBob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes wheelSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-height: 920px) {
+  .landing-section {
+    gap: 0.7rem;
+    padding-top: 0.2rem;
+  }
+
+  .landing-hero {
+    margin-top: 0.35rem;
+    line-height: 1.1;
+  }
+
+  .landing-features {
+    margin-top: 0.5rem;
+  }
+
+  .landing-feature-card {
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+  }
+}
+
+@media (max-height: 780px) {
+  .landing-section {
+    gap: 0.55rem;
+  }
+
+  .landing-hero {
+    font-size: clamp(1.45rem, 4.4vw, 3.25rem) !important;
+  }
+
+  .landing-features {
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .landing-section {
+    align-items: start;
+  }
+
+  .landing-copy p {
+    margin-bottom: 0.1rem;
+  }
+
+  .landing-hero {
+    margin-top: 0.55rem;
+    line-height: 1.16;
+  }
+
+  .landing-features {
+    margin-top: 0.7rem;
+  }
+
+  .float-soft {
+    animation: none;
+  }
 }
