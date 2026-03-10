@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Car, User, Mail, Phone, Lock, ArrowRight } from "lucide-react";
+import API from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,9 +16,20 @@ const Register = () => {
     password: "",
   });
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    navigate("/login");
+    try {
+      await API.post('/auth/register', {
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        password: form.password,
+      });
+      navigate('/login');
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || err.message || 'Registration failed');
+    }
   };
 
   const update = (field) => (e) =>

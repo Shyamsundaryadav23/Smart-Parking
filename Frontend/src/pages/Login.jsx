@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import API from "@/lib/api";
 import { Car, Mail, Lock, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,9 +11,26 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    navigate("/dashboard");
+    try {
+      const { data } = await API.post('/auth/login', { email, password });
+      localStorage.setItem('token', data.token);
+      if (data.user) {
+        // store id for later profile calls; also save full object if needed
+        localStorage.setItem('userId', data.user.user_id);
+        localStorage.setItem('user', JSON.stringify(data.user));
+      } else {
+        try {
+          const payload = JSON.parse(atob(data.token.split('.')[1]));
+          if (payload.user_id) localStorage.setItem('userId', payload.user_id);
+        } catch {};
+      }
+      navigate('/dashboard');
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || err.message || 'Login failed');
+    }
   };
 
   return (

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Shield, Mail, Lock, ArrowRight } from "lucide-react";
+import API from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,9 +11,20 @@ const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    navigate("/admin/dashboard");
+    try {
+      const { data } = await API.post('/admin/login', { email, password });
+      localStorage.setItem('token', data.token);
+      try {
+        const payload = JSON.parse(atob(data.token.split('.')[1]));
+        if (payload.user_id) localStorage.setItem('userId', payload.user_id);
+      } catch {};
+      navigate('/admin/dashboard');
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || err.message || 'Login failed');
+    }
   };
 
   return (

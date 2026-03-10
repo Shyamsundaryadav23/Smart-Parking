@@ -6,9 +6,11 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import UserLayout from "./components/UserLayout";
 import AdminLayout from "./components/AdminLayout";
+import PrivateRoute from "./components/PrivateRoute";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Profile from "./pages/Profile";
 import UserDashboard from "./pages/UserDashboard";
 import SlotBooking from "./pages/SlotBooking";
 import MyReservations from "./pages/MyReservations";
@@ -40,10 +42,11 @@ function App() {
             <Route path="/admin" element={<AdminLogin />} />
 
             {/* User */}
-            <Route element={<UserLayout />}>
+            <Route element={<PrivateRoute><UserLayout /></PrivateRoute>}>
               <Route path="/dashboard" element={<UserDashboard />} />
               <Route path="/slots/:lotId" element={<SlotBooking />} />
               <Route path="/reservations" element={<MyReservations />} />
+              <Route path="/profile" element={<Profile />} />
             </Route>
 
             {/* Admin */}
