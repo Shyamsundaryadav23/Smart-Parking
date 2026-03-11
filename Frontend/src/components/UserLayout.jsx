@@ -1,16 +1,25 @@
 import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Car, LayoutDashboard, CalendarCheck, LogOut, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const navItems = [
   { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-  { label: "My Reservations", path: "/reservations", icon: CalendarCheck }
+  { label: "My Reservations", path: "/reservations", icon: CalendarCheck },
+  { label: "Profile", path: "/profile", icon: Car }
 ];
 
 function UserLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // redirect if not authenticated
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate, location.pathname]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -46,7 +55,11 @@ function UserLayout() {
             ))}
 
             <button
-              onClick={() => navigate("/login")}
+                onClick={() => {
+                  localStorage.removeItem('token');
+                  localStorage.removeItem('userId');
+                  navigate("/login");
+                }}
               className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ml-2"
             >
               <LogOut className="h-4 w-4" />
@@ -86,8 +99,8 @@ function UserLayout() {
 
             <button
               onClick={() => {
-                setMenuOpen(false);
-                navigate("/login");
+                setMenuOpen(false);                localStorage.removeItem('token');
+                localStorage.removeItem('userId');                navigate("/login");
               }}
               className="flex w-full items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium"
             >

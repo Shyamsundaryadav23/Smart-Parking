@@ -7,6 +7,12 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::", // Listen on all IPv6 addresses (also covers IPv4)
     port: 8080, // Dev server port
+    proxy: {
+      '/auth': 'http://localhost:5000',
+      '/parking-lots': 'http://localhost:5000',
+      '/reservations': 'http://localhost:5000',
+      '/admin': 'http://localhost:5000',
+    },
     hmr: {
       overlay: false, // Disable the error overlay in the browser
     },

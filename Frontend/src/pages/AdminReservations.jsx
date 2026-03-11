@@ -1,19 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { reservations as initialReservations } from "@/data/mockData";
+import API from "@/lib/api";
 import { toast } from "sonner";
 
 const AdminReservations = () => {
-  const [reservations, setReservations] = useState(initialReservations);
+  const [reservations, setReservations] = useState([]);
 
-  const cancel = (id) => {
-    setReservations((prev) =>
-      prev.map((r) =>
-        r.id === id ? { ...r, status: "cancelled" } : r
-      )
-    );
-    toast.success("Reservation cancelled");
+  useEffect(() => {
+    API.get('/admin/reservations')
+      .then(res => setReservations(res.data))
+      .catch(err => console.error('failed to load reservations', err));
+  }, []);
+
+  const cancel = async (id) => {
+    try {
+      await API.delete(`/reservations/${id}`);
+      setReservations((prev) =>
+        prev.map((r) =>
+          r.reservation_id === id ? { ...r, status: "cancelled" } : r
+        )
+      );
+      toast.success("Reservation cancelled");
+    } catch (err) {
+      console.error(err);
+      toast.error('Could not cancel');
+    }
   };
 
   const statusBadge = (status) => {
@@ -56,15 +68,15 @@ const AdminReservations = () => {
                   key={r.id}
                   className="border-b last:border-0 hover:bg-muted/30 transition-colors"
                 >
-                  <td className="px-4 py-3 font-medium">{r.id}</td>
-                  <td className="px-4 py-3">{r.userName}</td>
+                  <td className="px-4 py-3 font-medium">{r.reservation_id}</td>
+                  <td className="px-4 py-3">{r.user_id}</td>
 
                   <td className="px-4 py-3">
-                    {r.slotLabel} ({r.lotName})
+                    {r.slot_id} ({r.lot_id})
                   </td>
 
                   <td className="px-4 py-3 text-muted-foreground text-xs">
-                    {r.startTime} – {r.endTime}
+                    {r.start_time} – {r.end_time}
                   </td>
 
                   <td className="px-4 py-3">{statusBadge(r.status)}</td>

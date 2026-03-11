@@ -1,37 +1,50 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, Trash2, Grid3X3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { parkingLots as initialLots } from "@/data/mockData";
+import API from "@/lib/api";
 import { toast } from "sonner";
 
 const ManageLots = () => {
-  const [lots, setLots] = useState(initialLots);
+  const [lots, setLots] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ name: "", location: "", totalSlots: "" });
+  const [form, setForm] = useState({ name: "", location: "", city: "", totalSlots: "" });
 
-  const addLot = (e) => {
+  useEffect(() => {
+    API.get('/parking-lots')
+      .then(res => setLots(res.data))
+      .catch(err => console.error('failed to load lots', err));
+  }, []);
+
+  const addLot = async (e) => {
     e.preventDefault();
-
-    const newLot = {
-      id: `lot-${Date.now()}`,
-      name: form.name,
-      location: form.location,
-      totalSlots: parseInt(form.totalSlots),
-      availableSlots: parseInt(form.totalSlots),
-    };
-
-    setLots([...lots, newLot]);
-    setForm({ name: "", location: "", totalSlots: "" });
-    setShowForm(false);
-
-    toast.success("Parking lot added");
+    try {
+      const { data } = await API.post('/admin/parking-lots', {
+        name: form.name,
+        location: form.location,
+        city: form.city || '',
+        total_slots: parseInt(form.totalSlots),
+      });
+      setLots([...lots, data]);
+      setForm({ name: "", location: "", totalSlots: "" });
+      setShowForm(false);
+      toast.success("Parking lot added");
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to add lot');
+    }
   };
 
-  const deleteLot = (id) => {
-    setLots(lots.filter((l) => l.id !== id));
-    toast.success("Parking lot deleted");
+  const deleteLot = async (id) => {
+    try {
+      await API.delete(`/admin/parking-lots/${id}`);
+      setLots(lots.filter((l) => (l.lot_id || l.id) !== id));
+      toast.success("Parking lot deleted successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to delete lot');
+    }
   };
 
   return (
@@ -71,6 +84,18 @@ const ManageLots = () => {
                 value={form.location}
                 onChange={(e) =>
                   setForm({ ...form, location: e.target.value })
+                }
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>City</Label>
+              <Input
+                placeholder="City"
+                value={form.city}
+                onChange={(e) =>
+                  setForm({ ...form, city: e.target.value })
                 }
                 required
               />
@@ -134,10 +159,10 @@ const ManageLots = () => {
             <tbody>
               {lots.map((lot) => (
                 <tr
-                  key={lot.id}
+                  key={lot.lot_id || lot.id}
                   className="border-b last:border-0 hover:bg-muted/30 transition-colors"
                 >
-                  <td className="px-4 py-3 font-mono text-xs">{lot.id}</td>
+                  <td className="px-4 py-3 font-mono text-xs">{lot.lot_id || lot.id}</td>
 
                   <td className="px-4 py-3 font-medium">{lot.name}</td>
 
@@ -145,14 +170,14 @@ const ManageLots = () => {
                     {lot.location}
                   </td>
 
-                  <td className="px-4 py-3">{lot.totalSlots}</td>
+                  <td className="px-4 py-3">{lot.total_slots || lot.totalSlots}</td>
 
                   <td className="px-4 py-3 flex gap-2">
                     <Button
                       size="sm"
                       variant="ghost"
                       className="text-primary hover:text-primary hover:bg-primary/10 h-8"
-                      onClick={() => window.location.href = `/admin/lots/${lot.id}/slots`}
+                      onClick={() => window.location.href = `/admin/lots/${lot.lot_id || lot.id}/slots`}
                     >
                       <Grid3X3 className="h-4 w-4 mr-1" />
                       Layout
@@ -161,7 +186,7 @@ const ManageLots = () => {
                       size="sm"
                       variant="ghost"
                       className="text-destructive hover:text-destructive hover:bg-destructive/10 h-8"
-                      onClick={() => deleteLot(lot.id)}
+                      onClick={() => deleteLot(lot.lot_id || lot.id)}
                     >
                       <Trash2 className="h-4 w-4 mr-1" />
                       Delete

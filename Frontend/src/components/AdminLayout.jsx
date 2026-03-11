@@ -10,7 +10,7 @@ import {
   Menu,
   ChevronLeft
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const sidebarItems = [
   { label: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
@@ -26,6 +26,12 @@ function AdminLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/admin');
+    }
+  }, [navigate, location.pathname]);
   const SidebarContent = () => (
     <>
       <div className="flex items-center gap-2 px-4 py-5 border-b border-sidebar-border">
@@ -61,8 +67,8 @@ function AdminLayout() {
       <div className="px-3 py-4 border-t border-sidebar-border">
         <button
           onClick={() => {
-            setMobileOpen(false);
-            navigate("/admin");
+            setMobileOpen(false);            localStorage.removeItem('token');
+            localStorage.removeItem('userId');            navigate("/admin");
           }}
           className="flex w-full items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground/70 hover:text-red-400 hover:bg-sidebar-accent"
         >

@@ -1,22 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CalendarCheck, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { reservations as initialReservations } from "@/data/mockData";
+import API from "@/lib/api";
+import { useNotifications } from "@/hooks/useNotifications";
 import { toast } from "sonner";
 
 const MyReservations = () => {
-  const [reservations, setReservations] = useState(
-    initialReservations.filter((r) => r.userId === "u1")
-  );
+  const [reservations, setReservations] = useState([]);
+  const { notifyReservationCancelled } = useNotifications();
 
-  const cancelReservation = (id) => {
-    setReservations((prev) =>
-      prev.map((r) =>
-        r.id === id ? { ...r, status: "cancelled" } : r
-      )
-    );
+  useEffect(() => {
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+      API.get(`/users/${userId}/reservations`)
+        .then(res => setReservations(res.data))
+        .catch(err => console.error('Failed to load reservations', err));
+    }
+  }, []);
 
-    toast.success("Reservation cancelled");
+  const cancelReservation = async (id) => {
+    try {
+      await API.delete(`/reservations/${id}`);
+      setReservations((prev) =>
+        prev.map((r) => (r.reservation_id === id ? { ...r, status: 'cancelled' } : r))
+      );
+      notifyReservationCancelled();
+    } catch (err) {
+      console.error(err);
+      toast.error('Could not cancel reservation');
+    }
   };
 
   const statusBadge = (status) => {
@@ -90,16 +102,16 @@ const MyReservations = () => {
                   key={r.id}
                   className="border-b last:border-0 hover:bg-muted/30 transition-colors"
                 >
-                  <td className="px-4 py-3 font-medium">{r.id}</td>
+                  <td className="px-4 py-3 font-medium">{r.reservation_id}</td>
 
                   <td className="px-4 py-3 text-muted-foreground">
-                    {r.lotName}
+                    {r.lotName || r.lot_id}
                   </td>
 
-                  <td className="px-4 py-3">{r.slotLabel}</td>
+                  <td className="px-4 py-3">{r.slot_id}</td>
 
                   <td className="px-4 py-3 text-muted-foreground text-xs">
-                    {r.startTime} – {r.endTime}
+                    {r.start_time} – {r.end_time}
                   </td>
 
                   <td className="px-4 py-3">
