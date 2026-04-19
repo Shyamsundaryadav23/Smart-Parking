@@ -14,6 +14,10 @@ async function createReservation(reservation) {
     end_time: reservation.end_time,
     price: reservation.price,
     status: reservation.status || 'active',
+    // Optional payment fields - only added if provided
+    ...(reservation.payment_id && { payment_id: reservation.payment_id }),
+    ...(reservation.payment_status && { payment_status: reservation.payment_status }),
+    ...(reservation.amount && { amount: reservation.amount }),
   };
   const params = {
     TableName: RESERVATIONS_TABLE,

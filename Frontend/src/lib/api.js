@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // baseURL points to the Node/Express server; adjust if running on a different port or using a proxy
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: "http://localhost:5000/api",
 });
 
 // attach token if available

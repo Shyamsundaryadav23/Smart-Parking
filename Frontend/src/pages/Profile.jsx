@@ -11,8 +11,17 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
 
   const userId = localStorage.getItem('userId');
+  const userStr = localStorage.getItem('user');
+  const userObj = userStr ? JSON.parse(userStr) : null;
+  const userRole = userObj?.role?.toLowerCase() || 'user';
 
   useEffect(() => {
+    // Prevent admins from accessing user profile
+    if (userRole === 'admin') {
+      navigate('/admin/dashboard');
+      return;
+    }
+
     if (!userId) {
       navigate('/login');
       return;
@@ -28,7 +37,7 @@ const Profile = () => {
         }
       })
       .finally(() => setLoading(false));
-  }, [userId, navigate]);
+  }, [userId, navigate, userRole]);
 
   const handleChange = (field) => (e) => {
     setUser(u => ({ ...u, [field]: e.target.value }));

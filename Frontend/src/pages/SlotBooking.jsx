@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Clock, CheckCircle, RefreshCw } from "lucide-react";
+import { ArrowLeft, Clock, CheckCircle, RefreshCw, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,6 +9,7 @@ import { useSlotMonitoring } from "@/hooks/useSlotMonitoring";
 import { useNotifications } from "@/hooks/useNotifications";
 import { initSocket } from "@/lib/socket";
 import { toast } from "sonner";
+import { payAndBook } from "@/lib/paymentHandler";
 
 const SlotBooking = () => {
   const { lotId } = useParams();
@@ -41,6 +42,7 @@ const SlotBooking = () => {
   const [endTime, setEndTime] = useState("");
   const [vehicleType, setVehicleType] = useState("");
   const [vehicleNumber, setVehicleNumber] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const PRICE_MAP = {
     Car: 50,
@@ -48,7 +50,7 @@ const SlotBooking = () => {
     "Electric Car": 60,
   };
 
-  const handleBook = async (e) => {
+  const handlePayAndBook = async (e) => {
     e.preventDefault();
 
     if (!selected || !vehicleType || !vehicleNumber || !startTime || !endTime) {
@@ -56,17 +58,36 @@ const SlotBooking = () => {
       return;
     }
 
-    const payload = {
-      slot_id: selected.slot_id || selected.id,
-      vehicle_type: vehicleType,
-      vehicle_number: vehicleNumber,
-      start_time: startTime,
-      end_time: endTime,
-    };
+    setIsLoading(true);
 
     try {
-      await API.post('/reservations', payload);
-      toast.success("Slot booked successfully");
+      // Get user info from localStorage or auth context
+      const userStr = localStorage.getItem('user');
+      const userInfo = userStr ? JSON.parse(userStr) : {};
+
+      const slotData = {
+        slot_id: selected.slot_id || selected.id,
+        vehicle_type: vehicleType.toLowerCase(),
+        start_time: startTime,
+        end_time: endTime,
+      };
+
+      const reservationData = {
+        slot_id: selected.slot_id || selected.id,
+        vehicle_type: vehicleType,
+        vehicle_number: vehicleNumber,
+        start_time: startTime,
+        end_time: endTime,
+      };
+
+      // Complete payment and booking flow
+      const result = await payAndBook(slotData, reservationData, {
+        name: userInfo.name || '',
+        email: userInfo.email || '',
+        phone: userInfo.phone || '',
+      });
+
+      toast.success("Slot booked successfully with payment!");
       notifyReservationSuccess(selected.label || selected.slot_number);
 
       // Reset form
@@ -79,8 +100,11 @@ const SlotBooking = () => {
       // Refetch updated slots
       refetch();
     } catch (err) {
-      console.error(err);
-      toast.error("Failed to book slot. Please try again.");
+      console.error('Payment and booking error:', err);
+      const errorMsg = err?.message || err?.data?.message || "Payment or booking failed. Please try again.";
+      toast.error(errorMsg);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -166,7 +190,7 @@ const SlotBooking = () => {
         {/* Booking Form */}
         <div className="parking-card p-5">
           {selected ? (
-            <form onSubmit={handleBook} className="space-y-5">
+            <form onSubmit={handlePayAndBook} className="space-y-5">
               <div className="flex items-center gap-3 pb-4 border-b">
                 <div className="gradient-bg rounded-lg p-2.5">
                   <CheckCircle className="h-5 w-5 text-primary-foreground" />
@@ -244,8 +268,13 @@ const SlotBooking = () => {
                 />
               </div>
 
-              <Button className="w-full gradient-bg text-primary-foreground hover:opacity-90">
-                Book Slot
+              <Button
+                onClick={handlePayAndBook}
+                disabled={isLoading}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-primary-foreground"
+              >
+                <CreditCard className="h-4 w-4 mr-2" />
+                {isLoading ? "Processing..." : "Pay & Book"}
               </Button>
             </form>
           ) : (

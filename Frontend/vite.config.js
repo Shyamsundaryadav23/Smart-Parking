@@ -1,7 +1,6 @@
 import { defineConfig } from "vite"; // Main Vite config helper
 import react from "@vitejs/plugin-react-swc"; // React plugin with SWC compiler for faster builds
 import path from "path"; // Node path module for resolving paths
-import { componentTagger } from "lovable-tagger"; // Optional dev-only plugin for tagging components
 
 export default defineConfig(({ mode }) => ({
   server: {
@@ -19,7 +18,6 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(), // Always include React plugin
-    mode === "development" && componentTagger() // Only run lovable-tagger in dev mode
   ].filter(Boolean), // Filter out false (for production build)
   resolve: {
     alias: {

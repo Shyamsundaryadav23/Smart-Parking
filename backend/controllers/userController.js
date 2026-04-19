@@ -4,6 +4,17 @@ const userModel = require('../models/userModel');
 async function getProfile(req, res) {
   try {
     const { id } = req.params;
+    
+    // Prevent admins from accessing user profile endpoint
+    if (req.user.role === 'admin') {
+      return res.status(403).json({ message: 'Admins cannot access user profile endpoint' });
+    }
+    
+    // Users can only access their own profile
+    if (req.user.user_id !== id) {
+      return res.status(403).json({ message: 'Forbidden: You can only access your own profile' });
+    }
+    
     const user = await userModel.getUserById(id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -21,10 +32,17 @@ async function getProfile(req, res) {
 async function updateProfile(req, res) {
   try {
     const { id } = req.params;
-    // optional: allow only if req.user.user_id === id or admin
-    if (req.user.user_id !== id && req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'Forbidden' });
+    
+    // Prevent admins from accessing user profile endpoint
+    if (req.user.role === 'admin') {
+      return res.status(403).json({ message: 'Admins cannot access user profile endpoint' });
     }
+    
+    // Users can only update their own profile
+    if (req.user.user_id !== id) {
+      return res.status(403).json({ message: 'Forbidden: You can only update your own profile' });
+    }
+    
     const { name, phone } = req.body;
     const updates = {};
     if (name !== undefined) updates.name = name;

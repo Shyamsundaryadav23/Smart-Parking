@@ -16,6 +16,7 @@ const Login = () => {
     try {
       const { data } = await API.post('/auth/login', { email, password });
       localStorage.setItem('token', data.token);
+      
       if (data.user) {
         // store id for later profile calls; also save full object if needed
         localStorage.setItem('userId', data.user.user_id);
@@ -23,7 +24,14 @@ const Login = () => {
       } else {
         try {
           const payload = JSON.parse(atob(data.token.split('.')[1]));
-          if (payload.user_id) localStorage.setItem('userId', payload.user_id);
+          if (payload.user_id) {
+            localStorage.setItem('userId', payload.user_id);
+            // Store user object with role from token
+            localStorage.setItem('user', JSON.stringify({
+              user_id: payload.user_id,
+              role: payload.role || 'user'
+            }));
+          }
         } catch {};
       }
       navigate('/dashboard');

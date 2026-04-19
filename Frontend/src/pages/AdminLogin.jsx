@@ -16,10 +16,26 @@ const AdminLogin = () => {
     try {
       const { data } = await API.post('/admin/login', { email, password });
       localStorage.setItem('token', data.token);
-      try {
-        const payload = JSON.parse(atob(data.token.split('.')[1]));
-        if (payload.user_id) localStorage.setItem('userId', payload.user_id);
-      } catch {};
+      
+      // Store user data from response
+      if (data.user) {
+        localStorage.setItem('userId', data.user.user_id);
+        localStorage.setItem('user', JSON.stringify(data.user));
+      } else {
+        // Fallback: extract from JWT token
+        try {
+          const payload = JSON.parse(atob(data.token.split('.')[1]));
+          if (payload.user_id) {
+            localStorage.setItem('userId', payload.user_id);
+            // Store user object with role from token
+            localStorage.setItem('user', JSON.stringify({
+              user_id: payload.user_id,
+              role: payload.role || 'admin'
+            }));
+          }
+        } catch {};
+      }
+      
       navigate('/admin/dashboard');
     } catch (err) {
       console.error(err);

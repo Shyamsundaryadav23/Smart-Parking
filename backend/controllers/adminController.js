@@ -25,7 +25,15 @@ async function login(req, res) {
       process.env.JWT_SECRET,
       { expiresIn: '8h' }
     );
-    res.json({ token });
+    // return token plus basic user info
+    const payloadUser = {
+      user_id: user.user_id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      role: user.role,
+    };
+    res.json({ token, user: payloadUser });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });

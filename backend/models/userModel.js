@@ -29,17 +29,34 @@ async function createUser(user) {
 }
 
 async function getUserByEmail(email) {
-  const params = {
-    TableName: USERS_TABLE,
-    IndexName: 'email-index', // assume a GSI exists
-    KeyConditionExpression: 'email = :e',
-    ExpressionAttributeValues: {
-      ':e': email,
-    },
-  };
+  try {
+    // Try to use GSI if it exists
+    const params = {
+      TableName: USERS_TABLE,
+      IndexName: 'email-index', // assume a GSI exists
+      KeyConditionExpression: 'email = :e',
+      ExpressionAttributeValues: {
+        ':e': email,
+      },
+    };
 
-  const result = await dynamoDb.query(params).promise();
-  return result.Items && result.Items.length ? result.Items[0] : null;
+    const result = await dynamoDb.query(params).promise();
+    return result.Items && result.Items.length ? result.Items[0] : null;
+  } catch (err) {
+    // Fallback: Use scan with filter expression if GSI doesn't exist
+    console.warn('GSI email-index not found, using scan with filter', err.code);
+    
+    const params = {
+      TableName: USERS_TABLE,
+      FilterExpression: 'email = :e',
+      ExpressionAttributeValues: {
+        ':e': email,
+      },
+    };
+
+    const result = await dynamoDb.scan(params).promise();
+    return result.Items && result.Items.length ? result.Items[0] : null;
+  }
 }
 
 async function getUserById(userId) {

@@ -18,7 +18,12 @@ function calculatePrice(vehicleType) {
 
 async function bookSlot(req, res) {
   try {
-    const { slot_id, vehicle_type, vehicle_number, start_time, end_time } = req.body;
+    // Prevent admins from booking slots through user endpoint
+    if (req.user.role === 'admin') {
+      return res.status(403).json({ message: 'Admins cannot book slots through user endpoints' });
+    }
+    
+    const { slot_id, vehicle_type, vehicle_number, start_time, end_time, payment_id, payment_status, amount } = req.body;
     const user_id = req.user.user_id;
 
     if (!slot_id || !vehicle_type || !vehicle_number || !start_time || !end_time) {
@@ -45,6 +50,10 @@ async function bookSlot(req, res) {
       start_time,
       end_time,
       price,
+      // Optional payment fields - only added if provided
+      ...(payment_id && { payment_id }),
+      ...(payment_status && { payment_status }),
+      ...(amount && { amount }),
     });
 
     // emit socket update for UI

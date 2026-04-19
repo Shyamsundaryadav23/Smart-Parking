@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import UserLayout from "./components/UserLayout";
 import AdminLayout from "./components/AdminLayout";
 import PrivateRoute from "./components/PrivateRoute";
+import RoleBasedRoute from "./components/RoleBasedRoute";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -43,7 +44,7 @@ function App() {
             <Route path="/admin" element={<AdminLogin />} />
 
             {/* User */}
-            <Route element={<PrivateRoute><UserLayout /></PrivateRoute>}>
+            <Route element={<PrivateRoute><RoleBasedRoute allowedRoles={['user']}><UserLayout /></RoleBasedRoute></PrivateRoute>}>
               <Route path="/dashboard" element={<UserDashboard />} />
               <Route path="/slots/:lotId" element={<SlotBooking />} />
               <Route path="/reservations" element={<MyReservations />} />
@@ -51,7 +52,7 @@ function App() {
             </Route>
 
             {/* Admin */}
-            <Route element={<AdminLayout />}>
+            <Route element={<PrivateRoute><RoleBasedRoute allowedRoles={['admin']}><AdminLayout /></RoleBasedRoute></PrivateRoute>}>
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/lots" element={<ManageLots />} />
               <Route path="/admin/lots/:lotId/slots" element={<AdminSlotDetails />} />
